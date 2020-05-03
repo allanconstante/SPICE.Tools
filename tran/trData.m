@@ -35,6 +35,8 @@ function [data] = trData(name, number)
     data.signals = [];
     data.vectors = {};
     
+    teste = [];
+    
     if file == -1
 
         error('File does not exist');
@@ -75,10 +77,13 @@ function [data] = trData(name, number)
                 state = 3;
             elseif state == 3
                 
-                % Extrai o nome dos sinais.
-                if contains(line,"(")
-
-                    aux = extractBetween(line, "(", " ");
+                if contains(line,"$&%#")
+                    
+                    aux2 = convertStringsToChars(line);
+                    teste = horzcat(teste, aux2);
+                    
+                    aux = extractBetween(teste, "(", " ");
+                    aux = string(aux);
                     data.signals = vertcat(data.signals, aux);
                     tam = size(data.signals);
                     tam = tam(1,1);
@@ -87,51 +92,44 @@ function [data] = trData(name, number)
                         
                         auxName = char(data.signals(i,1));
                         auxName = strrep(auxName,'.','_');
+                        auxName = strrep(auxName,',','_');
                         names{1,(i+1)} = auxName;
                     end
-                end
-                
-                % Reconhece o final do cabeçalho e o inicio dos dados.
-                if contains(line,"$&%#")
                     
-                    i = strfind(line, '$');
-                    i = i - 16;
                     if data.sweep ~= 0
-                        if i <= 0
-
-                            tam2 = strlength(lineAux);
-                            i = tam2 + i;
-                            while 1
-
-                                str2 = extractBetween(lineAux, i, i);
-                                if (i == tam2)||(strcmp(str2, " "))
-
-                                    break
-                                else
-
-                                    data.variable = strcat(data.variable, str2);
-                                    i = i + 1;
+                        
+                        i = strfind(teste, '$');
+                        while 1
+                            
+                            i = i - 1;
+                            str2 = extractBetween(teste, i, i);
+                            if not(strcmp(str2, " "))
+                                
+                                if flag == 0 
+                                    
+                                    flag = 1;
+                                    data.variable = strcat(...
+                                        data.variable, str2);
                                 end
-                            end
-                        else
-
-                            while 1
-
-                                str2 = extractBetween(line, i, i);
-                                if (strcmp(str2, " "))||(strcmp(str2, "$"))
-
-                                    break
-                                else
-
-                                    data.variable = strcat(data.variable, str2);
-                                    i = i + 1;
-                                end
+                            elseif strcmp(str2, " ")&&(flag == 1)
+                                
+                                break
+                            elseif flag == 1
+                            
+                                data.variable = strcat(...
+                                    data.variable, str2);
                             end
                         end
+                        data.variable = cell2mat(data.variable);
                     end
+                    flag = 0;
                     state = 4;
+                else
+                    
+                    aux2 = convertStringsToChars(line);
+                    teste = horzcat(teste, aux2);
                 end
-                lineAux = line;
+                
             elseif (state == 4)
                 
                 %  Leitura do conteudo
@@ -161,6 +159,7 @@ function [data] = trData(name, number)
                         break
                     else
                         
+                        % Ultimo sinal identificado
                         if stateSignal == (tam + 1)
                             
                             interaction = interaction + 1;
