@@ -79,7 +79,7 @@ function [data] = trData(name, number)
                 if contains(line,"(")
 
                     aux = extractBetween(line, "(", " ");
-                   data.signals = vertcat(data.signals, aux);
+                    data.signals = vertcat(data.signals, aux);
                     tam = size(data.signals);
                     tam = tam(1,1);
                     names{1,1} = 't';
@@ -96,34 +96,36 @@ function [data] = trData(name, number)
                     
                     i = strfind(line, '$');
                     i = i - 16;
-                    if i <= 0
-                        
-                        tam2 = strlength(lineAux);
-                        i = tam2 + i;
-                        while 1
-                            
-                            str2 = extractBetween(lineAux, i, i);
-                            if (i == tam2)||(strcmp(str2, " "))
-                                
-                                break
-                            else
-                                
-                                data.variable = strcat(data.variable, str2);
-                                i = i + 1;
+                    if data.sweep ~= 0
+                        if i <= 0
+
+                            tam2 = strlength(lineAux);
+                            i = tam2 + i;
+                            while 1
+
+                                str2 = extractBetween(lineAux, i, i);
+                                if (i == tam2)||(strcmp(str2, " "))
+
+                                    break
+                                else
+
+                                    data.variable = strcat(data.variable, str2);
+                                    i = i + 1;
+                                end
                             end
-                        end
-                    else
-                        
-                        while 1
-                            
-                            str2 = extractBetween(line, i, i);
-                            if (strcmp(str2, " "))||(strcmp(str2, "$"))
-                                
-                                break
-                            else
-                                
-                                data.variable = strcat(data.variable, str2);
-                                i = i + 1;
+                        else
+
+                            while 1
+
+                                str2 = extractBetween(line, i, i);
+                                if (strcmp(str2, " "))||(strcmp(str2, "$"))
+
+                                    break
+                                else
+
+                                    data.variable = strcat(data.variable, str2);
+                                    i = i + 1;
+                                end
                             end
                         end
                     end
