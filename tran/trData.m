@@ -1,27 +1,34 @@
 function [data] = trData(name, number)
 
+%   =======================================================================
 %   A funçao trData tem por objetivo a extração dos sinais elétricos conti-
-%   dos no arquivo de extensão ".trX" proveniente de simulações SPICE, per-
-%   mitindo a manipulação dos sinais dentro da plataforma Matlab.
+%   dos no  arquivo de extensão  ".trX"  proveniente das simulações do tipo
+%   transiente no software HSPICE. Permitindo a manipulação dos sinais den-
+%   tro do Matlab.
 %
 %   A função tem dois formatos para os argumentos de entrada:
 %
 %       1 - [data] = trData(name, number);
 %       2 - [data] = trData(name).
 %
-%       name:   nome do arquivo de extensão ".trX" (saida da simulação);
-%       number: numero da sequência de simulação (tr0, tr1, tr3, ...).
+%   =======================================================================
 %
-%       Exemplos:
+%
+%   Entradas --------------------------------------------------------------
+%   name:   nome do arquivo;
+%   number: sufixo da extensão.
+%
+%   Exemplos:
 %       
 %       - trData('ckt', 0) -> lê o arquivo ckt.tr0;
 %       - trData('ckt', 6) -> lê o arquivo ckt.tr6;
 %
 %       - trData('ckt.tr6') -> lê o arquivo ckt.tr6;
 %
-%       Note que ao entrar apenas com o nome do arquivo este deve ser com-
-%       pleto.
+%   Note que ao entrar apenas com o nome do arquivo este deve ser completo.
 %
+%
+%   Saida -----------------------------------------------------------------
 %   Como saida a função retorna um struct com o seguinte formato:
 %
 %            file: "trX"
@@ -32,25 +39,13 @@ function [data] = trData(name, number)
 %         signals: []
 %         vectors: {}
 %
-%       file:       numero da sequência de simulação (tr0, tr1, tr3, ...);
-%
-%       date:       data e hora da simulação;
-%
-%       variable:   nome da variavel usada para o comando sweep;
-%
-%       values:     vetor com o valores numericos utilizados no comando
-%                   sweep;
-%
-%       sweep:      numero de varreduras realizadas, compativel com o ta-
-%                   manho do vetor values;
-%
-%       signals:    vetor de strings com o nome dos sinais;
-%
-%       vectors:    celula com tabelas (uma para cada sweep) com os valores
-%                   numericos do vetor tempo e dos sinais. A posição de ca-
-%                   da celula (tabela) corresponde ao resultado da simula-
-%                   ção para o valor da variavel em varredura (sweep) con-
-%                   tida na mesma posição do vetor values.
+%   file:       extensão do arquivo com sufixo;
+%   date:       data e hora em que foi realizada a simulação;
+%   variable:   nome da variavel de varredura;
+%   values:     vetor com os valores utilizados nas varreduras;
+%   sweep:      numero de varreduras realizadas;
+%   signals:    vetor de strings com o nome dos sinais elétricos;
+%   vectors:    vetores com os valores dos sinais elétricos.
 %
 
     if ~isstring(name)
