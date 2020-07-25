@@ -1,29 +1,31 @@
 function [t,ft,value] = trGetSignal(spice, signal, sweep)
 
+%   =======================================================================
+%   Esta função permite a captura do vetor de um  respectivo sinal elétrico
+%   e seu vetor tempo dentro da struct proveniente da função trData.
 %
-%   Esta função permite a captura do vetor sinal e seu vetor tempo dentro
-%   da struct de um arquivo ".trX".
-%
-%   Permite dois modos de argumentos de entrada:
+%   A função tem dois formatos para os argumentos de entrada:
 %
 %       1 - [t,ft,value] = trGetSignal(spice, signal, sweep);
 %       2 - [t,ft] = trGetSignal(spice, signal);
 %
-%       spice:  struct do sinal '.trX';
-%       signal: nome do sinal;
-%       sweep:  posição da varredura (sweep);
+%   =======================================================================
 %
-%       Sem o argumento sweep a função pega o sinal de posição 1 da celula
-%       vectors. Do mesmo modo a variavel value é suprimida no retorno da
-%       função pois equivale ao valor numerico da variavel no respectivo
-%       sweep.
+%   Entradas
+%   -----------------------------------------------------------------------
+%   spice:  struct, saida da função trData;
+%   signal: nome do sinal;
+%   sweep:  posição na varredura;
 %
-%   Como variaveis de saidas temos:
+%   Sem o argumento sweep  a função pega  o sinal elétrico correspondente a 
+%   varredura 1.
 %
-%       t:      vetor função tempo;
-%       ft:     vetor com os valores numericos do sinal;
-%       value:  valor numerico da variavel no respectivo sweep.
-%
+%   
+%   Saidas
+%   -----------------------------------------------------------------------
+%   t:      vetor tempo;
+%   ft:     vetor do respectivo sinal elétrico;
+%   value:  valor da variavel na respectiva varredura.
 %
 
     tam = size(spice.signals);
