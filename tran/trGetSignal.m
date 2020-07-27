@@ -4,10 +4,14 @@ function [t,ft,value] = trGetSignal(spice, signal, sweep)
 %   Esta função permite a captura do vetor de um  respectivo sinal elétrico
 %   e seu vetor tempo dentro da struct proveniente da função trData.
 %
-%   A função tem dois formatos para os argumentos de entrada:
+%   A função tem dois formatos para os argumentos de entrada e três para os
+%   para os elementos de saida:
 %
-%       1 - [t,ft,value] = trGetSignal(spice, signal, sweep);
-%       2 - [t,ft] = trGetSignal(spice, signal);
+%       1 - [...] = trGetSignal(spice, signal, sweep);
+%       2 - [...] = trGetSignal(spice, signal);
+%       3 - [t,ft,value] = trGetSignal(...);
+%       4 - [t,ft] = trGetSignal(...);
+%       5 - [ft] = trGetSignal(...);
 %
 %   =======================================================================
 %
