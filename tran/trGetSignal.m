@@ -5,7 +5,7 @@ function [t,ft,value] = trGetSignal(spice, signal, sweep)
 %   e seu vetor tempo dentro da struct proveniente da função trData.
 %
 %   A função tem dois formatos para os argumentos de entrada e três para os
-%   para os elementos de saida:
+%   elementos de saida:
 %
 %       1 - [...] = trGetSignal(spice, signal, sweep);
 %       2 - [...] = trGetSignal(spice, signal);
