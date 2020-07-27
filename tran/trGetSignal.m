@@ -43,11 +43,15 @@ function [t,ft,value] = trGetSignal(spice, signal, sweep)
         ft = spice.vectors{sweep,1}{:,s};
     elseif nargin == 2
         
-        t = spice.vectors{1,1}.t;
-        ft = spice.vectors{1,1}{:,s};
+        sweep = 1;
+        t = spice.vectors{sweep,1}.t;
+        ft = spice.vectors{sweep,1}{:,s};
     end
     
-    if nargout == 3
+    if nargout == 1
+        
+        t = ft;
+    elseif nargout == 3
         
         value = spice.values(sweep,1);
     end
