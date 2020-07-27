@@ -1,5 +1,30 @@
 function [graph] = trPlot(spice, signal, sweep)
-    
+
+%   =======================================================================
+%   Esta função plota a curva do sinal indicando, no dominio tempo, contido
+%   na struct proveniente da função trData.
+%
+%   A função tem os seguintes formatos:
+%
+%       1 - [graph] = trPlot(...);
+%       2 - trPlot(spice, signal, sweep);
+%       3 - trPlot(spice, signal).
+%
+%   =======================================================================
+%
+%
+%   Entradas --------------------------------------------------------------
+%   spice:   struct, saída da função trData;
+%   signal:  nome do sinal;
+%   sweep:   posição na varredura.
+%
+%   Sem o argumento sweep  a função pega  o sinal elétrico correspondente a
+%   varredura 1.
+%
+%
+%   Saída -----------------------------------------------------------------
+%   graph:   objeto para ajustes e modificações da tela plot.
+%
     tam = size(spice.signals);
     for i=1:tam(1,1)
         

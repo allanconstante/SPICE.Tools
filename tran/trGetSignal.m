@@ -15,8 +15,7 @@ function [t,ft,value] = trGetSignal(spice, signal, sweep)
 %
 %   =======================================================================
 %
-%   Entradas
-%   -----------------------------------------------------------------------
+%   Entradas --------------------------------------------------------------
 %   spice:  struct, saida da função trData;
 %   signal: nome do sinal;
 %   sweep:  posição na varredura;
@@ -25,8 +24,7 @@ function [t,ft,value] = trGetSignal(spice, signal, sweep)
 %   varredura 1.
 %
 %   
-%   Saidas
-%   -----------------------------------------------------------------------
+%   Saidas ----------------------------------------------------------------
 %   t:      vetor tempo;
 %   ft:     vetor do respectivo sinal elétrico;
 %   value:  valor da variavel na respectiva varredura.
