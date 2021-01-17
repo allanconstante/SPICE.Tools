@@ -1,4 +1,4 @@
-function [dV] = BTI(t, inputs, tech)
+function [dV] = BTI(model, inputs, tech, t, dVth0)
     %%  Variaveis de entrada.
     %
     %   - alfa:     Duty cycle;
@@ -46,7 +46,12 @@ function [dV] = BTI(t, inputs, tech)
     q = 1.60217662e-19;
 
     %%  Equações.
-
+    
+    switch nargin
+        case 4
+            dVth0 = 0;
+    end
+    
     Vgs = Vdd;
     te = tox;
     Eox = (Vgs-Vth)/tox;
@@ -56,8 +61,58 @@ function [dV] = BTI(t, inputs, tech)
     C = exp(-Ea/(k*T))/T0;
 
     Kv = ((q*tox/eox)^3)*(K^2)*Cox*(Vgs-Vth)*sqrt(C)*exp((2*Eox)/E0);
-    beta = 1-(((2*qsi1*te)+sqrt(qsi2*C*(1-alfa)*Tclk))./((2*tox)+sqrt(C.*t)));
-    dV = (sqrt((Kv^2)*alfa*Tclk)./(1-(beta.^(1/(2*n))))).^(2*n);
+    
+    if strcmp('LongTerm', model)
+        
+        beta = 1-(((2*qsi1*te)+sqrt(qsi2*C*(1-alfa)*Tclk))./((2*tox)...
+            +sqrt(C.*t)));
+        dV = (sqrt((Kv^2)*alfa*Tclk)./(1-(beta.^(1/(2*n))))).^(2*n);
+    
+    elseif strcmp('Static', model)
+        
+        
+        
+    elseif strcmp('Dynamic', model)
+        
+        est = 0;
+        Tst = (Tclk*alfa) + t(1,1);
+        Trv = Tclk + t(1,1);
+        t0 = t(1,1);
+        tam = size(t);
+        dV = zeros(1, tam(1,2));
+        for i = 1:tam(1,2)
+            
+            if t(1,i) < Tst
+
+                dV(1,i) = (Kv*(t(1,i)-t0)^(1/2) + nthroot(dVth0, 2*n))^...
+                    (2*n);
+                
+            elseif t(1,i) <= Trv
+                
+                if est==0
+                    
+                    t0 = t(1,(i - 1));
+                    dVth0 = dV(1,(i - 1));
+                    est = 1;
+                    
+                end
+                dV(1,i) = dVth0*(1 - ((2*qsi1*te + sqrt(qsi2*C*(t(1,i)...
+                    -t0)))/((2*tox)+sqrt(C*t(1,i)))));
+            
+            else
+                
+                est = 0;
+                t0 = t(1,(i - 1));
+                dVth0 = dV(1,(i - 1));
+                
+                Tst = Tst + Tclk;
+                Trv = Trv + Tclk;
+                
+                dV(1,i) = (Kv*(t(1,i)-t0)^(1/2) + nthroot(dVth0, 2*n))^(2*n);
+                
+            end
+        end
+    end
     
     %%  Referencias.
     
