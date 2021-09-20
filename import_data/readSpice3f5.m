@@ -69,14 +69,14 @@ function [data] = readSpice3f5(name)
                 %------
                 if line == 1
                     fprintf('\n');
-                    fprintf('{Progress} [');
+                    fprintf('[Progress]-[');
                     n = fprintf('] 0%%');
                 elseif line == No_Points
                     while n > 0
                         fprintf('\b');
                         n = n - 1;
                     end
-                    fprintf('>] 100%%\n');
+                    fprintf('=] 100%%\n');
                 elseif line >= pAux
                     while n > 0
                         fprintf('\b');

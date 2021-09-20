@@ -13,6 +13,14 @@ dc = 'DC transfer characteristic';
 ac = '';
 
 %% main
+fprintf('******\n');
+fprintf('** SPICE-Tools : Tools for interaction with data files SPICE\n');
+fprintf('** Download: https://github.com/allanconstante/SPICE-Tools\n');
+fprintf('** Author: Allan Appelt Constante\n');
+fprintf('** Creation Date: 18/09/2021\n');
+fprintf('******\n');
+fprintf('\n');
+
 while 1
     command = input('SPICE -->> ', 's');
     command = split(command);
@@ -73,6 +81,8 @@ while 1
             clc
         case 'help'
         case 'exit'
+            clear
+            clc
             break
         otherwise
             warning('Comando invalido.');
