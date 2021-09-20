@@ -28,7 +28,11 @@ function [data] = readSpice3f5(name)
         end
 
         strAux = split(stateFile, ": ");
-        if strcmp(strAux{1,1}, 'Plotname')
+        if strcmp(strAux{1,1}, 'Date')
+            data.Date = datetime(strAux{2,1}, 'InputFormat',...
+                'eee MMM dd HH:mm:ss uuuu');
+            data.Date.Format = 'dd/MM/uuuu HH:mm:ss';
+        elseif strcmp(strAux{1,1}, 'Plotname')
             data.Analysis = strAux{2,1};
         elseif strcmp(strAux{1,1}, 'No. Variables')
             No_Variables = str2num(strAux{2,1});
