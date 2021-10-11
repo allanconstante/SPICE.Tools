@@ -8,9 +8,9 @@ clear
 
 %% Constantes
 
-tran = 'Transient Analysis';
-dc = 'DC transfer characteristic';
-ac = '';
+%tran = 'Transient Analysis';
+%dc = 'DC transfer characteristic';
+%ac = '';
 
 %% main
 fprintf('******\n');
@@ -49,25 +49,8 @@ while 1
                  warning('O comando source necessita de argumentos')
             end
         case 'plot'
-            if strcmp(kinema.Analysis, tran)
-                tam = size(command);
-                ref = getVector(kinema,'time');
-                hold on
-                for i=2:tam(1,1)
-                    y = getVector(kinema,command{i,1});
-                    plotSpice(ref,y);
-                end
-                hold off
-            elseif strcmp(kinema.Analysis, dc)
-                tam = size(command);
-                ref = getVector(kinema,'v(v-sweep)');
-                hold on
-                for i=2:tam(1,1)
-                    y = getVector(kinema,command{i,1});
-                    plot(ref,y);
-                end
-                hold off
-            end
+            aux = command(2:end, 1);
+            plotSpice(kinema,aux);
         case '-v'
             tam = size(kinema.Variables);
             fprintf('\n');
