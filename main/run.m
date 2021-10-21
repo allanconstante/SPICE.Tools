@@ -44,6 +44,21 @@ while 1
                         fprintf(...
                             '\t--------------------------------------\n');
                         fprintf('\n');
+                    case '-tr'
+                        kinema = trData(command{3,1});
+                        tVectors = size(kinema.Values{1,1});
+                        date = datestr(kinema.Date,'dd/mm/yyyy HH:MM:ss');
+                        fprintf('\n');
+                        fprintf('\t%s\n',command{3,1});
+                        fprintf(...
+                            '\t--------------------------------------\n');
+                        fprintf('\tAnalysis:\t%s\n',kinema.Analysis);
+                        fprintf('\tDate:\t\t%s\n', date);
+                        fprintf('\tPoints:\t\t%d\n',tVectors(1,1));
+                        fprintf('\tVariables:\t%d\n',tVectors(1,2));
+                        fprintf(...
+                            '\t--------------------------------------\n');
+                        fprintf('\n');
                 end
             else
                  warning('O comando source necessita de argumentos')
