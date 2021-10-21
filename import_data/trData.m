@@ -82,7 +82,7 @@ function [data] = trData(name, number)
                     header = horzcat(header, stateFile);
                     inf = readHeader_tr(header);
                     data.Date = inf.Date;
-                    data.Analysis = 'DC transfer characteristic';
+                    data.Analysis = 'Transient Analysis';
                     data.Variables = inf.Variables;
                     sweep = inf.Sweep;
                 
