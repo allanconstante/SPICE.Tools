@@ -86,8 +86,8 @@ while 1
         case '-v'
             tam = size(kinema.Variables);
             fprintf('\n');
-            fprintf('\tVariables\n');
-            fprintf('\t--------------------------------------\n');
+            fprintf('\tN.\t\tName\n');
+            fprintf('\t----\t------------\n');
             for i=1:tam(1,1)
                 fprintf('\t%d:\t\t%s\n',i,kinema.Variables{i,1});
             end
