@@ -39,7 +39,7 @@ function [data] = readSpice3f5(name)
             data.Variables = cell(No_Variables,1);
         elseif strcmp(strAux{1,1}, 'No. Points')
             No_Points = str2num(strAux{2,1});
-            data.Values = zeros(No_Points,No_Variables);
+            Values = zeros(No_Points,No_Variables);
         elseif strcmp(strAux{1,1}, 'Variables:')
             for i=1:No_Variables
                 stateFile = fgetl(file);
@@ -60,16 +60,16 @@ function [data] = readSpice3f5(name)
                 strAux = split(stateFile);
                 auxT = size(strAux);
                 aux = str2num(strAux{auxT(1,1),1});
-                data.Values(line,1) = aux;
+                Values(line,1) = aux;
                 for column=2:No_Variables
                     stateFile = fgetl(file);
                     aux = str2num(stateFile);
-                    data.Values(line,column) = aux;
+                    Values(line,column) = aux;
                 end
                 %------
                 if line == 1
                     fprintf('\n');
-                    fprintf('[Progress]-[');
+                    fprintf('\t[Progress]-[');
                     n = fprintf('] 0%%');
                 elseif line == No_Points
                     while n > 0
@@ -90,5 +90,6 @@ function [data] = readSpice3f5(name)
             end
         end
     end
+    data.Values{1,1} =  Values;
     fclose(file);
 end

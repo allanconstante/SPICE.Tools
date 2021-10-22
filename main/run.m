@@ -31,7 +31,7 @@ while 1
                 switch command{2,1}
                     case '-3f5'
                         kinema = readSpice3f5(command{3,1});
-                        tVectors = size(kinema.Values);
+                        tVectors = size(kinema.Values{1,1});
                         date = datestr(kinema.Date,'dd/mm/yyyy HH:MM:ss');
                         fprintf('\n');
                         fprintf('\t%s\n',command{3,1});
