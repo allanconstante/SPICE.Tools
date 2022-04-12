@@ -47,7 +47,15 @@ function [data] = trData(name, number)
 %   signals:    vetor de strings com o nome dos sinais elétricos;
 %   vectors:    vetores com os valores dos sinais elétricos.
 %
-
+    
+    %------
+    inf = dir(name);
+    Tfile = inf.bytes; 
+    ref = (Tfile/100)*2.5;
+    pAux = ref;
+    progs = 0;
+    %------
+    
     if ~isstring(name)
         
         name = convertCharsToStrings(name);
@@ -71,36 +79,63 @@ function [data] = trData(name, number)
     if file == -1
         error('File does not exist');
     else
+        %-------
+        fprintf('\n');
+        fprintf('[Progress]-[');
+        n = fprintf('] 0%%');
+        %-------
         while 1
             stateFile = fgetl(file);
             if stateFile == -1
                 break
             end
             line = string(stateFile);
+            %-------
+            progs = progs + strlength(line); 
+            %-------
             if state == 0 % Monta o cabeçalho
+                
                 if contains(line,"$&%#")
+                    
                     header = horzcat(header, stateFile);
                     inf = readHeader_tr(header);
                     data.Date = inf.Date;
                     data.Analysis = 'Transient Analysis';
                     data.Variables = inf.Variables;
                     sweep = inf.Sweep;
-                
-                    flag = 0;                
+                            
                     indT = 1;
                     indV = 1;
+                    
                     qV = size(data.Variables);          
+                    
+                    %---------------------
+                    % A flag tem como finalidade informar se existe uma
+                    % variavel de sweep.
+                    %
+                    % Quando em 0 indica a existencia da variavel e
+                    % considera como valor o primeiro elemento da pilha de
+                    % dados.
+                    %
+                    % Quando em 1 indica que não existe variavel.
+                    %---------------------
                     if sweep > 0
                         qV = qV -1;
+                        flag = 0;
+                    else
+                        flag = 1;
                     end
+                    
                     data.Values = cell(1,1);
                     state = 1;
                     aux2 = 0;
+                    
                 else
                     header = horzcat(header, stateFile);
                 end
                 
                 cont = 1;
+                
             elseif (state == 1)
                 
                 ind = strfind(line, '.');
@@ -115,7 +150,6 @@ function [data] = trData(name, number)
                     aux = str2num(aux);
                     %-------
                     if flag == 0
-                        %j = aux; continuar
                         flag = 1;
                     elseif aux == 1.0000e+30
                         cont = cont + 1;
@@ -145,8 +179,26 @@ function [data] = trData(name, number)
                     b = b + r;
                 end
             end
+            
+            %---------
+            if progs >= pAux
+                while n > 0
+                    fprintf('\b');
+                    n = n - 1;
+                end
+                n = fprintf('=] %2.0f%%', ((pAux/Tfile)*100));
+                n = n-1;
+                pAux = pAux+ref;
+            end
+            %---------
         end
     end
+    %-----------
+    while n > 0
+        fprintf('\b');
+        n = n - 1;
+    end
+    fprintf('=] 100%%\n');
+    %-----------
     fclose(file);
 end
-
