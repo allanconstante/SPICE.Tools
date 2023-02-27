@@ -1,67 +1,77 @@
 function [] = plotSpice(spice,cmd)
 
 %%
-flag = 0;
-lim = '0';
-plotConfig;
+
+flag            = 0;
 
 %%
+figr            = figure('Name',spice.Analysis,'NumberTitle','off');
+axis            = axes;
+
+plotConfig;
+
+figr.Color      = winColor;
+
+axis.XColor     = axiColor;
+axis.YColor     = axiColor;
+axis.Color      = backColor;
+axis.GridColor  = gridColor;
 
 if strcmp(spice.Analysis, 'Transient Analysis')
-    x = getVector(spice,'dom');
-    titleG = titleG_tr;
-    axisXG = axisXG_tr;
-    axisYG = axisYG_tr;
+    
+    axisXG = 'Time (s)';
 elseif strcmp(spice.Analysis, 'DC transfer characteristic')
-    x = getVector(spice,'dom');
-    titleG = titleG_dc;
-    axisXG = axisXG_dc;
-    axisYG = axisYG_dc;
+    
+    axisXG = 'Sweep Voltage (V)';
 elseif strcmp(spice.Analysis,'ac')
+    
     %Continuar
 end
 
-tam = size(cmd);
-if tam(1,1) == 1
-    cmd = split(cmd);
+if strcmp(Grid, 'on')
+    grid minor
+elseif strcmp(Grid, 'off')
+    grid off;
 end
 
+%%
+
+x = getVector(spice,'dom');
+
 tam = size(cmd);
+
 for i = 1:tam(1,1)
+    
     if (contains(cmd{i,1},"-"))&&(contains(cmd{i,1},"="))
+        
         aux = split(cmd{i,1},'=');
+        
         switch aux{1,1}
-            case '-title'
-                titleG = aux{2,1};
-            case '-axisx'
+            
+            case '-x'
                 axisXG = aux{2,1};
-            case '-axisy'
+            case '-y'
                 axisYG = aux{2,1};
-            case '-t'
+            case '-tp'
                 type = aux{2,1};
-            case '-fst'
-                fontSizeT = str2num(aux{2,1});
-            case '-fsx'
-                fontSizeX = str2num(aux{2,1});
-            case '-fsy'
-                fontSizeY = str2num(aux{2,1});
-            case '-lw'
-                lineWidth = str2num(aux{2,1});
-            case '-limx'
+            case '-lx'
                 limAux = strrep(aux{2,1},';',' ');
-                limX = str2num(limAux);
-                lim = 'x';
-            case '-limy'
+                axis.xLim = str2num(limAux);
+            case '-ly'
                 limAux = strrep(aux{2,1},';',' ');
-                limY = str2num(limAux);
-                lim = 'y';
-        end        
+                axis.YLim = str2num(limAux);
+        end
+        
     elseif contains(cmd{i,1},"-")
-       switch cmd{i,1}
+        
+        switch cmd{i,1}
+            
             case '-xy'
                 flag = 2;
-        end 
+        end
+        
     else
+        
         if flag == 0
             vector{1,1} = cmd{i,1};
             flag = 1;
@@ -72,30 +82,99 @@ for i = 1:tam(1,1)
             axisXG = 'Amplitude';
             flag = 0;
         end
+        
     end
 end
+
+%%
 
 hold on
+
+liV = '';
+lsV = '';
+liI = '';
+lsI = '';
+
+state = 0;
+
 tam = size(vector);
 for i=1:tam(1,1)
+    
     y = getVector(spice,vector{i,1});
-    if type == 'c'
-        plot(x, y, 'LineWidth', lineWidth);
-    elseif type == 'd'
-        scatter(x, y, 8, 'filled');
+    
+    if contains(vector{i,1},"v(")
+        
+        if isempty(liV)
+        
+            liV = min(y);
+            lsV = max(y);
+        end
+        
+        if state == 0
+            state = 1;
+        elseif state == 2
+            yyaxis right;
+            flag = 4;
+        elseif ((state == 1)&&(flag == 3))
+            yyaxis left;
+        end
+        
+        if strcmp(type, 'linha')
+
+            plot(x, y, 'LineWidth', lineWidth);
+            [liV, lsV] = getLimits([liV lsV],[min(y) max(y)]);
+            axis.YLim = [liV lsV];
+        elseif strcmp(type, 'pontos')
+
+            scatter(x, y, 8, 'filled');
+        end
+        ylabel('Voltage (V)','Interpreter','Latex');
+    elseif contains(vector{i,1},"i(")
+        
+        if state == 0
+            state = 2;
+        elseif state == 1
+            yyaxis right;
+            flag = 3;
+        elseif ((state == 2)&&(flag == 4))
+            yyaxis left;
+        end
+        
+        if isempty(liI)
+        
+            liI = min(y);
+            lsI = max(y);
+        end
+        
+        if strcmp(type, 'linha')
+
+            plot(x, y, 'LineWidth', lineWidth);
+            [liI, lsI] = getLimits([liI lsI],[min(y) max(y)]);
+            axis.YLim = [liI lsI];
+        elseif strcmp(type, 'pontos')
+
+            scatter(x, y, 8, 'filled');
+        end
+        ylabel('Current (A)','Interpreter','Latex');
     end
 end
-title(titleG, 'FontSize', fontSizeT);
-xlabel(axisXG, 'FontSize', fontSizeX);
-ylabel(axisYG, 'FontSize', fontSizeY);
 
-axis = gca;
-if lim == 'y'
-    axis.YLim = limY;
+axis.XLim = [x(1,1) x(end,end)];
+
+xlabel(axisXG,'Interpreter','Latex');
+
+if (flag == 3)||(flag == 4)
+    yyaxis left;
+    axis.YColor = axiColor;
+    yyaxis right;
+    axis.YColor = axiColor;
 end
-if lim == 'x'
-    axis.XLim = limX;
-end
-grid on
+
 hold off
+
+leg = legend(vector, 'Interpreter','Latex');
+leg.Color = 'none';
+leg.Box = 'off';
+leg.TextColor = 'white';
+
 end
